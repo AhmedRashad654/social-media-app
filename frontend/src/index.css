@@ -1,0 +1,24 @@
+.icon-custom {
+  padding: 5px;
+  border-radius: 50%;
+  transition: 0.3s all;
+  cursor: pointer;
+}
+.icon-custom:hover {
+  background-color: #616161;
+}
+.forms {
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  color: #6f9eba;
+}
+@media (max-width: 900px) {
+  .hiddSidebar {
+    display: none;
+    color: #6666c7;
+  }
+}
+.hidden {
+  display: none;
+}
