@@ -171,13 +171,9 @@ export default function UpdateProfile() {
             <FormLabel mb={3}>bio</FormLabel>
             <Input
               placeholder="bio"
-              {...register("bio", {
-                required: "bio is required",
-              })}
+              {...register("bio")}
             />
-            <FormErrorMessage>
-              {errors.bio && errors.bio.message}
-            </FormErrorMessage>
+       
           </FormControl>
           <FormControl isInvalid={errors.email} mb={4}>
             <FormLabel mb={3}>email</FormLabel>

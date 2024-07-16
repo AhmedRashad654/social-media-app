@@ -8,12 +8,22 @@ const messages = new mongoose.Schema({
   text: {
     type: String,
   },
+  username: {
+    type: String,
+  },
+  profile_pic: {
+    type: String,
+  },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
   img: {
     type: String,
+  },
+  seen: {
+    type: Boolean,
+    default: false,
   },
 });
 const Messages = mongoose.model("Messages", messages);

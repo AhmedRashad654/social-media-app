@@ -6,7 +6,9 @@ const {
   updateUser,
   followAndUnFollow,
   userDetails,
+  freezeAccount,
   uploadPhoto,
+  getSuggestUser,
   searchUser,
 } = require("../controllers/userController");
 const { protectedRoute } = require("../middelwire/protectedRoute");
@@ -25,5 +27,7 @@ router.patch(
 router.post("/follow/:id", protectedRoute, followAndUnFollow);
 router.get("/profile/:id", userDetails);
 router.get("/search/:username", searchUser);
+router.get("/suggest", protectedRoute, getSuggestUser);
+router.put("/freeze", protectedRoute, freezeAccount);
 
 module.exports = router;

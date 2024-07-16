@@ -13,59 +13,62 @@ export default function Messages({ message, loading }) {
     <>
       {loading && <OpacityMessage />}
       <VStack w={"full"}>
-        {message.map((e, i) => (
-          <Flex
-            gap={1}
-            key={i}
-            justifyContent={e?.sender === user?._id ? "end" : "start"}
-            flexDirection={e?.sender === user?._id ? "row" : "row-reverse"}
-            w={"full"}
-          >
-            {e?.text !== "" && (
-              <>
-                {" "}
-                <Flex
-                  bg={"#93b0c1"}
-                  pt={1}
-                  px={2}
-                  borderRadius={5}
-                  alignItems={"center"}
-                  gap={1}
-                >
+        {message &&
+          message.map((e, i) => (
+            <Flex
+              gap={1}
+              key={i}
+              justifyContent={e?.sender === user?._id ? "end" : "start"}
+              flexDirection={e?.sender === user?._id ? "row" : "row-reverse"}
+              w={"full"}
+            >
+              {e?.text !== "" && (
+                <>
                   {" "}
-                  <Text marginTop={-2}>{e?.text}</Text>
-                  <IoCheckmarkDone
-                    w={"10px"}
-                    color="#6666c7"
-                    className={e?.sender !== user?._id ? "hidden" : ""}
-                  />
-                </Flex>
-              </>
-            )}
-            {e?.img !== "" && (
-              <Box position={"relative"}>
-                {" "}
-                <Image src={`${url}/${e?.img}`} w={100} cursor={"pointer"}/>
-                <Box position={"absolute"} right={1} bottom={1}>
-                  <IoCheckmarkDone
-                    w={"10px"}
-                    color="#6666c7"
-                    className={e?.sender !== user?._id ? "hidden" : ""}
-                  />
+                  <Flex
+                    bg={"#9fc69f"}
+                    pt={1}
+                    px={2}
+                    borderRadius={5}
+                    alignItems={"center"}
+                    gap={1}
+                  >
+                    {" "}
+                    <Text marginTop={-2}>{e?.text}</Text>
+                    <IoCheckmarkDone
+                      w={"10px"}
+                      color={e?.seen === true ? "#6666c7" : ""}
+                      className={e?.sender !== user?._id ? "hidden" : ""}
+                    />
+                  </Flex>
+                </>
+              )}
+              {e?.img !== "" && (
+                <Box position={"relative"}>
+                  {" "}
+                  <Image src={`${url}/${e?.img}`} w={100} cursor={"pointer"} />
+                  <Box position={"absolute"} right={1} bottom={1}>
+                    <IoCheckmarkDone
+                      w={"10px"}
+                      color={e?.seen === true ? "#6666c7" : ""}
+                      className={e?.sender !== user?._id ? "hidden" : ""}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            )}
-            <Avatar
-              name={e?.sender === user?._id ? user?.username : select?.username}
-              src={
-                e?.sender === user?._id
-                  ? `${url}/${user?.profile_pic}`
-                  : `${url}/${select?.profile_pic}`
-              }
-              size={"sm"}
-            />
-          </Flex>
-        ))}
+              )}
+              <Avatar
+                name={
+                  e?.sender === user?._id ? user?.username : select?.username
+                }
+                src={
+                  e?.sender === user?._id
+                    ? `${url}/${user?.profile_pic}`
+                    : `${url}/${select?.profile_pic}`
+                }
+                size={"sm"}
+              />
+            </Flex>
+          ))}
       </VStack>
     </>
   );

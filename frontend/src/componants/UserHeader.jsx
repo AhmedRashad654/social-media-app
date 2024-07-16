@@ -19,11 +19,21 @@ import { useRecoilState } from "recoil";
 import { userAtom } from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {
+  checkComing,
+  pagenationCheck,
+  pagenationPage,
+} from "../atoms/pagenationAtom";
+import { feedPostAtom } from "../atoms/feedPostAtom";
 export default function UserHeader({ user }) {
   const [userLogin] = useRecoilState(userAtom);
   const following = user?.followers.includes(userLogin?._id);
   const navigate = useNavigate();
   const toast = useShowToast();
+  const [, setCheckCom] = useRecoilState(checkComing);
+  const [, setPage] = useRecoilState(pagenationPage);
+  const [, setFeed] = useRecoilState(feedPostAtom);
+  const [, setCheck] = useRecoilState(pagenationCheck);
   /////////copyLink///////////
   function handleCopy() {
     const currentUrl = window.location.href;
@@ -49,6 +59,10 @@ export default function UserHeader({ user }) {
         user.followers.push(userLogin?._id);
         toast(` Followed ${user?.username} successfully`, "success");
       }
+      setFeed([]);
+      setPage(1);
+      setCheckCom(false);
+      setCheck(false);
     }
 
     setLoadingFollow(false);
@@ -59,10 +73,10 @@ export default function UserHeader({ user }) {
         <Flex justifyContent={"space-between"} w={"full"} alignItems={"center"}>
           <Box>
             <Text fontWeight={"bold"} fontSize={"2xl"}>
-              {user?.name}
+              {user?.username}
             </Text>
             <Flex gap={"5px"} alignItems={"center"}>
-              <Text fontSize={"sm"}>{user?.username}</Text>
+              <Text fontSize={"sm"}>{user?.name}</Text>
               <Text
                 fontSize={"sm"}
                 bg={"gray.dark"}
@@ -87,7 +101,9 @@ export default function UserHeader({ user }) {
           </Box>
         </Flex>
 
-        <Text fontSize={"sm"} marginTop={-5}>{user?.bio}</Text>
+        <Text fontSize={"sm"} marginTop={-5}>
+          {user?.bio}
+        </Text>
         {userLogin?._id === user?._id && (
           <Button onClick={() => navigate("/updateProfile")}>
             update Profile

@@ -35,6 +35,7 @@ export default function Register({ setAuth }) {
               isClosable: true,
             });
             localStorage.setItem("user", JSON.stringify(result?.data));
+            setAuth("login");
           }
         })
         .catch((error) => {

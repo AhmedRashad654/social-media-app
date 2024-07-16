@@ -7,20 +7,20 @@ import { userAtom } from "../atoms/userAtom";
 import Header from "../componants/Header";
 export default function Auth() {
   const [auth, setAuth] = useRecoilState(authAtom);
-  // eslint-disable-next-line no-unused-vars
-  const [user,_] = useRecoilState(userAtom);
+
+  const [user] = useRecoilState(userAtom);
   if (user) {
     return <Navigate to={"/"} />;
   }
-  
+
   return (
-    <div>
-      <Header/>
+    <>
+      <Header w={"full"} />
       {auth === "login" ? (
         <Login setAuth={setAuth} />
       ) : (
         <Register setAuth={setAuth} />
       )}
-    </div>
+    </>
   );
 }

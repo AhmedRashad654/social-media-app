@@ -74,6 +74,7 @@ export default function CreatePost() {
         onClose();
         setText("");
         setImageUpload("");
+        setImageReader("");
         setIsLoading(false);
       } catch (error) {
         toast(error?.response?.data?.message, "error");

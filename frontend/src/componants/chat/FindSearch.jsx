@@ -1,7 +1,6 @@
-import { Avatar, Flex, Image, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Image, Text, VStack } from "@chakra-ui/react";
 import { url } from "../../axios/axios";
-import { useNavigate } from "react-router-dom";
-import { CheckIcon } from "@chakra-ui/icons";
+
 import verified from "../../../public/verified.png";
 import PropTypes from "prop-types";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -10,12 +9,13 @@ import {
   selectConverstion,
 } from "../../atoms/converstionAtom";
 import { userAtom } from "../../atoms/userAtom";
-export default function FindSearch({ e }) {
-  const navigate = useNavigate();
+export default function FindSearch({ e, onlineUser }) {
+
   const [, setSelect] = useRecoilState(selectConverstion);
   const [conver] = useRecoilState(converstionArray);
 
   const user = useRecoilValue(userAtom);
+  const isOnline = Array.isArray(onlineUser) && onlineUser.includes(e?._id);
   return (
     <Flex
       justifyContent={"center"}
@@ -45,19 +45,40 @@ export default function FindSearch({ e }) {
             });
           }
         });
-
-        navigate(`/chatpage/containerMessage`);
+        if (conver.length === 0) {
+          setSelect({
+            converstionId: 123,
+            userId: e?._id,
+            username: e?.username,
+            profile_pic: e?.profile_pic,
+          });
+        }
       }}
     >
-      <Avatar name={e?.username} size={"sm"} src={`${url}/${e?.profile_pic}`} />
+      <Box position={"relative"}>
+        <Avatar
+          name={e?.username}
+          size={"sm"}
+          src={`${url}/${e?.profile_pic}`}
+        />
+        {isOnline && (
+          <Box
+            position={"absolute"}
+            right={"-2px"}
+            top={4}
+            w={2}
+            h={2}
+            borderRadius={"50%"}
+            background={"green"}
+          ></Box>
+        )}
+      </Box>
+
       <VStack alignItems={"self-start"} justifyContent={"center"} gap={"-5"}>
         <Flex alignItems={"center"} gap={1}>
           <Text fontSize={"12px"}>{e?.username}</Text>
+
           <Image src={verified} w={"15px"} h={"15px"} />
-        </Flex>
-        <Flex gap={1}>
-          <CheckIcon w={"10px"} color={"gray.light"} />
-          <Text fontSize={"10px"}>Hey</Text>
         </Flex>
       </VStack>
     </Flex>
@@ -65,4 +86,5 @@ export default function FindSearch({ e }) {
 }
 FindSearch.propTypes = {
   e: PropTypes.object,
+  onlineUser: PropTypes.array,
 };

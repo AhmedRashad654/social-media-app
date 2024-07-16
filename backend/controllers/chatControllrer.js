@@ -14,29 +14,36 @@ const createMessage = async (req, res) => {
     let findConverstion = await Converstion.findOne({
       practictions: { $all: [recipiedId, req.userId] },
     });
+    let image;
+    if (req.file) {
+      image = req.file.filename;
+    }
     if (!findConverstion) {
       findConverstion = await Converstion.create({
         practictions: [req.userId, recipiedId],
         lastMessage: {
           text: text,
           sender: req.userId,
+          img: image || "",
+          seen: false,
         },
       });
     }
-    let image;
-    if (req.file) {
-      image = req.file.filename;
-    }
+
     const newMessage = await Messages.create({
       converstionId: findConverstion._id,
       sender: req.userId,
+      username: req.username,
+      profile_pic: req.profile_pic,
       text,
       img: image || "",
+      seen: false,
     });
     await findConverstion.updateOne({
       lastMessage: {
         text: text,
         sender: req.userId,
+        img: image || "",
       },
     });
     const recipient = getRecipientSocketId(recipiedId);

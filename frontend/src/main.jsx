@@ -33,8 +33,10 @@ const colors = {
     dark: "#1e1e1e",
   },
 };
-
-const theme = extendTheme({ styles, config, colors });
+const breakpoints = {
+  smm: "1100px",
+};
+const theme = extendTheme({ styles, config, colors, breakpoints });
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RecoilRoot>

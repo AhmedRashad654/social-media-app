@@ -13,7 +13,7 @@ export default function PartSendMessage({ setMessage }) {
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
   const [select, setSelect] = useRecoilState(selectConverstion);
-  const [converstion, setConversetion] = useRecoilState(converstionArray);
+  const [, setConversetion] = useRecoilState(converstionArray);
   async function handleSendMessage() {
     const formData = new FormData();
     formData.append("text", text);
@@ -31,6 +31,7 @@ export default function PartSendMessage({ setMessage }) {
               lastMessage: {
                 text: response.data?.text,
                 sender: response.data?.sender,
+                img:response.data?.img
               },
             };
           }
@@ -51,6 +52,7 @@ export default function PartSendMessage({ setMessage }) {
             lastMessage: {
               text: response?.data?.text,
               sender: response?.data?.sender,
+              img: response.data?.img,
             },
           },
           ...prev,
@@ -68,7 +70,6 @@ export default function PartSendMessage({ setMessage }) {
       console.log(error);
     }
   }
-  console.log(converstion);
   return (
     <Flex h={"9%"} gap={2} alignItems={"center"} w={"full"}>
       <Box width={"95%"} position={"relative"}>

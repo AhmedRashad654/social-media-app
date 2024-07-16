@@ -16,11 +16,12 @@ import { request } from "../axios/axios";
 import { useRecoilState } from "recoil";
 import { userAtom } from "../atoms/userAtom";
 import useShowToast from "../Hooks/Toast";
+import { useNavigate } from "react-router-dom";
 export default function Login({ setAuth }) {
   const toast = useShowToast();
   const { colorMode } = useColorMode();
-
-  const [_, setUser] = useRecoilState(userAtom);
+  const navigate = useNavigate();
+  const [, setUser] = useRecoilState(userAtom);
   const {
     handleSubmit,
     register,
@@ -33,7 +34,6 @@ export default function Login({ setAuth }) {
         .then((result) => {
           if (result?.data?._id) {
             toast("success Login", "success");
-
             localStorage.setItem("user", JSON.stringify(result?.data));
             setUser(result?.data);
           }

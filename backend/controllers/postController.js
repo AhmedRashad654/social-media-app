@@ -145,14 +145,25 @@ const repliesPost = async (req, res) => {
  *****************************************/
 const feedPost = async (req, res) => {
   try {
+    const { pageNumber, limit } = req.params;
     const Following = req.user.following;
     const userIds = [...Following];
+    const totalPost = await Posts.find({
+      userId: { $in: userIds },
+    }).countDocuments();
     const findPostsFeed = await Posts.find({
       userId: { $in: userIds },
     })
+      .skip((pageNumber - 1) * limit)
+      .limit(limit)
       .populate({ path: "userId", select: ["username", "profile_pic"] })
       .sort({ createdAt: -1 });
-    res.status(200).json({ message: "fetch posts feed", data: findPostsFeed });
+    const totalPage = Math.ceil(totalPost / limit);
+    res.status(200).json({
+      message: "fetch posts feed",
+      data: findPostsFeed,
+      hasNextPage: pageNumber < totalPage,
+    });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }

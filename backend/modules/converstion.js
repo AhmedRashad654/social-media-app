@@ -8,6 +8,11 @@ const converstion = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
+      seen: {
+        type: Boolean,
+        default: false,
+      },
+      img: String,
     },
   },
   {
@@ -15,4 +20,4 @@ const converstion = new mongoose.Schema(
   }
 );
 const Converstion = mongoose.model("Converstion", converstion);
-module.exports = Converstion
+module.exports = Converstion;

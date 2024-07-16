@@ -5,7 +5,7 @@ import PostPage from "../pages/PostPage";
 import Auth from "../pages/Auth";
 import UpdateProfile from "../componants/UpdateProfile";
 import PageChat from "../pages/PageChat";
-import Chating from "../componants/chat/Chating";
+import FreezeAccount from "../componants/FreezeAccount";
 
 export const router = createBrowserRouter([
   {
@@ -31,11 +31,9 @@ export const router = createBrowserRouter([
   {
     path: "/chatpage",
     element: <PageChat />,
-    children: [
-      {
-        path: 'containerMessage',
-        element:<Chating/>
-      }
-    ]
+  },
+  {
+    path: "/freeze",
+    element: <FreezeAccount />,
   },
 ]);

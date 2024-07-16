@@ -13,21 +13,25 @@ import Messages from "./Messages";
 import { useContext, useEffect, useRef } from "react";
 import { request, url } from "../../axios/axios";
 import { useRecoilState } from "recoil";
+import PropTypes from "prop-types";
 import {
   converstionArray,
   selectConverstion,
 } from "../../atoms/converstionAtom";
 import { useState } from "react";
-
 import PartSendMessage from "./PartSendMessage";
 import { SocketContext } from "../../context/socketContext";
-export default function Chating() {
+import { userAtom } from "../../atoms/userAtom";
+
+export default function Chating({ message, setMessage }) {
   const [select] = useRecoilState(selectConverstion);
+  const [user] = useRecoilState(userAtom);
   const [, setConversetion] = useRecoilState(converstionArray);
   const { socketValue } = useContext(SocketContext);
-  const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const lastMessage = message[message.length - 1]?.sender !== user?._id;
+
   useEffect(() => {
     setMessage([]);
     async function getMessages() {
@@ -36,26 +40,44 @@ export default function Chating() {
       setMessage(response?.data);
       setLoading(false);
     }
-    if (select.converstionId !== 123) {
+    if (select && select?.converstionId !== 123 && select !== null) {
       getMessages();
     }
-  }, [select]);
+  }, [select, setMessage]);
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [message]);
+
   useEffect(() => {
-    const handleMessage = (msg) => {
-      setMessage((prev) => [...prev, msg]);
-      setConversetion((prevConversetion) =>
-        prevConversetion.map((e) => {
-          if (e._id === msg.converstionId) {
+    if (lastMessage && message?.length > 0) {
+      socketValue?.emit("needSeenMessage", {
+        conversetionId: select.converstionId,
+        userId: select.userId,
+      });
+    }
+  }, [
+    lastMessage,
+    message?.length,
+    select.conversetionId,
+    select.converstionId,
+    select.userId,
+    socketValue,
+  ]);
+  useEffect(() => {
+    const handleSeenMessage = async ({ conversetionId }) => {
+      setMessage((prev) =>
+        prev.map((e) => (e?.seen === false ? { ...e, seen: true } : e))
+      );
+      setConversetion((prev) =>
+        prev.map((e) => {
+          if (e?._id === conversetionId) {
             return {
               ...e,
               lastMessage: {
-                text: msg?.text,
-                sender: msg?.sender,
+                ...e.lastMessage,
+                seen: true,
               },
             };
           }
@@ -63,12 +85,13 @@ export default function Chating() {
         })
       );
     };
-    socketValue?.on("new message", handleMessage);
 
+    socketValue?.on("okSeenMessage", handleSeenMessage);
     return () => {
-      socketValue?.off("new message", handleMessage);
+      socketValue?.off("okSeenMessage", handleSeenMessage);
     };
-  }, [setConversetion, socketValue]);
+  }, [setConversetion, setMessage, socketValue]);
+
   return (
     <VStack
       w={"100%"}
@@ -101,3 +124,7 @@ export default function Chating() {
     </VStack>
   );
 }
+Chating.propTypes = {
+  message: PropTypes.array,
+  setMessage: PropTypes.func,
+};

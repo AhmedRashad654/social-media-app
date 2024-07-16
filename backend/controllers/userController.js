@@ -63,6 +63,10 @@ const login = async (req, res) => {
     if (!findPassword) {
       return res.status(404).json({ error: "password is wrong" });
     }
+    if (findUser?.freeze === true) {
+      findUser.freeze = false;
+      await findUser.save();
+    }
     genereteToken(findUser._id, res);
     res.status(200).json({
       _id: findUser._id,
@@ -251,6 +255,50 @@ const searchUser = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+const getSuggestUser = async (req, res) => {
+  try {
+    const userId = req.userId.toString();
+
+    const findUser = await User.findById(userId).select("following");
+
+    const followingId = findUser.following || [];
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const followingObjectIds = followingId.map(
+      (id) => new mongoose.Types.ObjectId(id)
+    );
+
+    const users = await User.aggregate([
+      {
+        $match: {
+          _id: { $ne: userObjectId, $nin: followingObjectIds },
+        },
+      },
+      {
+        $sample: {
+          size: 4,
+        },
+      },
+    ]);
+
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+const freezeAccount = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const findUser = await User.findById(userId);
+    if (!findUser) {
+      return res.status(400).json({ error: "user not Found" });
+    }
+    findUser.freeze = true;
+    await findUser.save();
+    return res.status(200).json({ message: "Account Freezed" });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
 module.exports = {
   register,
   login,
@@ -259,4 +307,6 @@ module.exports = {
   followAndUnFollow,
   userDetails,
   searchUser,
+  getSuggestUser,
+  freezeAccount,
 };

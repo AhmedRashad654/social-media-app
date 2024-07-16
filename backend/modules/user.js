@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   profile_pic: {
     type: String,
-    default:''
+    default: "",
   },
   bio: {
     type: String,
@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
   following: {
     type: [String],
     default: [],
+  },
+  freeze: {
+    type: Boolean,
+    default: false,
   },
 });
 const User = mongoose.model("User", userSchema);

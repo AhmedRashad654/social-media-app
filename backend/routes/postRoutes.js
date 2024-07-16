@@ -16,7 +16,7 @@ router.get("/single/:id", getSinglePost);
 router.delete("/:id", protectedRoute, deletePost);
 router.post("/like/:id", protectedRoute, likeAndUnLike);
 router.post("/repliy/:id", protectedRoute, repliesPost);
-router.get("/feed", protectedRoute, feedPost);
+router.get("/feed/:pageNumber/:limit", protectedRoute, feedPost);
 router.get("/special/:username", specialPost);
 
 module.exports = router;

@@ -17,6 +17,8 @@ export default function UserPage() {
     try {
       const response = await request.get(`/api/users/profile/${username}`);
       if (response.data.message === "fetch successfully") {
+        if (response?.data?.data?.freeze === true)
+          return alert("user Not found");
         setSuccess(true);
         setUser(response?.data?.data);
       }
